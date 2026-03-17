@@ -155,9 +155,6 @@ function BattleStrip({
                       ? skin.name.slice(0, 15) + "..."
                       : skin.name}
                   </span>
-                  <span className="text-[9px] text-gray-400 font-mono">
-                    ${computeSkinPrice(skin, i).toFixed(2)}
-                  </span>
                 </div>
               );
             })}
