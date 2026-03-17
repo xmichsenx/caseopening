@@ -461,6 +461,9 @@ export function CaseBattle({
                         <span className="text-[10px] text-gray-500">
                           {skin.rarity.name}
                         </span>
+                        <span className="text-[10px] text-green-400 font-mono mt-0.5">
+                          ${computeSkinPrice(skin, WINNER_INDEX).toFixed(2)}
+                        </span>
                         {item && (
                           <span className="text-[10px] text-gray-400">
                             {item.isStatTrak && (
