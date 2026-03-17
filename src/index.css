@@ -1,0 +1,147 @@
+@import "tailwindcss";
+
+body {
+  margin: 0;
+  background-color: #0a0a0f;
+  color: #e0e0e0;
+  font-family:
+    "Inter",
+    "Segoe UI",
+    system-ui,
+    -apple-system,
+    sans-serif;
+  min-height: 100vh;
+  background-image:
+    radial-gradient(
+      ellipse at 50% 0%,
+      rgba(75, 105, 255, 0.08) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse at 80% 50%,
+      rgba(136, 71, 255, 0.05) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 20% 80%,
+      rgba(211, 44, 230, 0.04) 0%,
+      transparent 50%
+    );
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* Glow pulse for active elements */
+@keyframes glow-pulse {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes rarity-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 10px var(--glow-color, transparent),
+      0 0 20px var(--glow-color, transparent);
+  }
+  50% {
+    box-shadow:
+      0 0 15px var(--glow-color, transparent),
+      0 0 35px var(--glow-color, transparent);
+  }
+}
+
+@keyframes count-up {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-rarity-glow {
+  animation: rarity-glow 2s ease-in-out infinite;
+}
+
+.animate-count-up {
+  animation: count-up 0.3s ease-out;
+}
+
+/* Tier badge gradients */
+.tier-standard {
+  background: linear-gradient(135deg, #4b69ff, #3b5bdb);
+}
+.tier-premium {
+  background: linear-gradient(135deg, #8847ff, #6c2bd9);
+}
+.tier-elite {
+  background: linear-gradient(135deg, #eb4b4b, #c0392b);
+}
+.tier-legendary {
+  background: linear-gradient(135deg, #caab05, #f59e0b);
+}
+.tier-mythic {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
