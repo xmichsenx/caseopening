@@ -11,6 +11,7 @@ import { OpeningModal } from "./components/OpeningModal";
 import { CaseBattle } from "./components/CaseBattle";
 import { Inventory } from "./components/Inventory";
 import { CaseDetailModal } from "./components/CaseDetailModal";
+import { SkinRoulette } from "./components/SkinRoulette";
 
 const CASES: CaseDefinition[] = [
   // ── Free Tier ($0) ─────────────────────────────────────
@@ -626,6 +627,8 @@ export function App() {
     addToInventory,
     sellItem,
     spendBalance,
+    removeItems,
+    addBalance,
     resetGame,
     xpProgress,
   } = useGameState();
@@ -636,6 +639,7 @@ export function App() {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalStrips, setModalStrips] = useState<Skin[][]>([]);
   const [battleOpen, setBattleOpen] = useState(false);
+  const [rouletteOpen, setRouletteOpen] = useState(false);
 
   // Get skins specific to the selected case (filtered by weapon category, then limited to case pool)
   const caseSkins = useMemo(() => {
@@ -800,7 +804,7 @@ export function App() {
           GLOBAL OFFENSIVE
         </h1>
         <p className="text-xs text-gray-500 uppercase tracking-[0.4em] mt-2 font-medium">
-          Case Simulator 4.6
+          Case Simulator 4.7
         </p>
       </header>
 
@@ -815,6 +819,22 @@ export function App() {
       />
 
       {/* Case Selector */}
+      <div className="flex items-center justify-between mb-2">
+        <div />
+        <button
+          onClick={() => setRouletteOpen(true)}
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-black text-sm uppercase tracking-wider transition-all cursor-pointer border-2 hover:scale-105"
+          style={{
+            background: "linear-gradient(135deg, #e74c3c30, #27ae6030)",
+            borderColor: "#e74c3c60",
+            color: "#e74c3c",
+          }}
+        >
+          <span className="text-base">🎰</span>
+          Skin Roulette
+        </button>
+      </div>
+
       <CaseSelector
         cases={CASES}
         selectedCase={selectedCase}
@@ -866,6 +886,16 @@ export function App() {
         wonItems={recentWonItems}
         onSellItem={sellItem}
         onSpend={spendBalance}
+      />
+
+      {/* Skin Roulette */}
+      <SkinRoulette
+        isOpen={rouletteOpen}
+        onClose={() => setRouletteOpen(false)}
+        inventory={state.inventory}
+        onRemoveItems={removeItems}
+        onAddBalance={addBalance}
+        onAddXp={addXp}
       />
 
       {/* Inventory */}

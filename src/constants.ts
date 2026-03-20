@@ -62,3 +62,37 @@ export const ROULETTE_ITEM_COUNT = 50;
 export const WINNER_INDEX = 47; // 0-indexed, so 48th item
 export const STARTING_BALANCE = 0;
 export const LEVEL_UP_BONUS = 1.0;
+
+// ── Skin Roulette (Red / Black / Green) ─────────────
+import type { RouletteColor, RouletteSegment } from "./types";
+
+/** 15 segments: 7 Red, 7 Black, 1 Green — ordered for visual alternation. */
+export const SKIN_ROULETTE_SEGMENTS: RouletteSegment[] = [
+  { color: "red", number: 0 },
+  { color: "black", number: 1 },
+  { color: "red", number: 2 },
+  { color: "black", number: 3 },
+  { color: "red", number: 4 },
+  { color: "black", number: 5 },
+  { color: "green", number: 6 },
+  { color: "red", number: 7 },
+  { color: "black", number: 8 },
+  { color: "red", number: 9 },
+  { color: "black", number: 10 },
+  { color: "red", number: 11 },
+  { color: "black", number: 12 },
+  { color: "red", number: 13 },
+  { color: "black", number: 14 },
+];
+
+export const SKIN_ROULETTE_PAYOUTS: Record<RouletteColor, number> = {
+  red: 2,
+  black: 2,
+  green: 14,
+};
+
+export const SKIN_ROULETTE_COLORS: Record<RouletteColor, string> = {
+  red: "#e74c3c",
+  black: "#2c3e50",
+  green: "#27ae60",
+};

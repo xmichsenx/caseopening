@@ -1,10 +1,15 @@
 import { describe, it, expect } from "vitest";
 import type { Skin } from "../types";
-import { generateRouletteStrip, generateSellPrice } from "../engine";
+import {
+  generateRouletteStrip,
+  generateSellPrice,
+  spinSkinRoulette,
+} from "../engine";
 import {
   ROULETTE_ITEM_COUNT,
   WINNER_INDEX,
   SELL_PRICE_RANGES,
+  SKIN_ROULETTE_SEGMENTS,
 } from "../constants";
 
 const mockSkins: Skin[] = [
@@ -128,5 +133,35 @@ describe("generateSellPrice", () => {
     const price = generateSellPrice("Unknown");
     expect(price).toBeGreaterThanOrEqual(0.03);
     expect(price).toBeLessThanOrEqual(0.5);
+  });
+});
+
+describe("spinSkinRoulette", () => {
+  it("returns a valid segment from SKIN_ROULETTE_SEGMENTS", () => {
+    for (let i = 0; i < 50; i++) {
+      const result = spinSkinRoulette();
+      expect(result.winningIndex).toBeGreaterThanOrEqual(0);
+      expect(result.winningIndex).toBeLessThan(SKIN_ROULETTE_SEGMENTS.length);
+      expect(result.winningSegment).toBe(
+        SKIN_ROULETTE_SEGMENTS[result.winningIndex],
+      );
+    }
+  });
+
+  it("returns a segment with a valid color", () => {
+    const validColors = new Set(["red", "black", "green"]);
+    for (let i = 0; i < 50; i++) {
+      const result = spinSkinRoulette();
+      expect(validColors.has(result.winningSegment.color)).toBe(true);
+    }
+  });
+
+  it("hits all three colors over many spins", () => {
+    const seen = new Set<string>();
+    for (let i = 0; i < 500; i++) {
+      seen.add(spinSkinRoulette().winningSegment.color);
+      if (seen.size === 3) break;
+    }
+    expect(seen.size).toBe(3);
   });
 });

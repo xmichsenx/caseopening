@@ -134,6 +134,23 @@ export function useGameState() {
     return success;
   }, []);
 
+  /** Remove multiple items from the inventory (e.g. lost skin roulette bet). */
+  const removeItems = useCallback((itemIds: string[]) => {
+    const idSet = new Set(itemIds);
+    setState((prev) => ({
+      ...prev,
+      inventory: prev.inventory.filter((i) => !idSet.has(i.id)),
+    }));
+  }, []);
+
+  /** Add balance without selling (e.g. skin roulette win payout). */
+  const addBalance = useCallback((amount: number) => {
+    setState((prev) => ({
+      ...prev,
+      balance: Math.round((prev.balance + amount) * 100) / 100,
+    }));
+  }, []);
+
   const resetGame = useCallback(() => {
     const fresh: GameState = {
       balance: STARTING_BALANCE,
@@ -158,6 +175,8 @@ export function useGameState() {
     addToInventory,
     sellItem,
     spendBalance,
+    removeItems,
+    addBalance,
     resetGame,
     xpProgress,
     xpForNextLevel,

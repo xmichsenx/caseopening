@@ -62,3 +62,17 @@ export interface GameState {
   inventory: InventoryItem[];
   totalCasesOpened: number;
 }
+
+// ── Skin Roulette ────────────────────────────────────
+
+export type RouletteColor = "red" | "black" | "green";
+
+export interface RouletteSegment {
+  color: RouletteColor;
+  number: number; // 0-14
+}
+
+export interface SkinRouletteResult {
+  winningSegment: RouletteSegment;
+  winningIndex: number; // index within SKIN_ROULETTE_SEGMENTS
+}

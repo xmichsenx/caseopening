@@ -6,6 +6,7 @@ import { Inventory } from "../components/Inventory";
 import { CaseSelector } from "../components/CaseSelector";
 import { OpeningModal } from "../components/OpeningModal";
 import { CaseBattle } from "../components/CaseBattle";
+import { SkinRoulette } from "../components/SkinRoulette";
 import { getFeaturedSkin } from "../components/CaseSelector";
 
 vi.mock("../audio", () => ({
@@ -22,6 +23,18 @@ vi.mock("framer-motion", () => ({
     }: React.HTMLAttributes<HTMLDivElement> & {
       onAnimationComplete?: () => void;
     }) => <div {...props}>{children}</div>,
+    svg: ({
+      children,
+      ...props
+    }: React.SVGAttributes<SVGSVGElement> & { [key: string]: unknown }) => {
+      const { animate, transition, initial, ...rest } = props as Record<
+        string,
+        unknown
+      >;
+      return (
+        <svg {...(rest as React.SVGAttributes<SVGSVGElement>)}>{children}</svg>
+      );
+    },
   },
 }));
 
@@ -399,5 +412,89 @@ describe("getFeaturedSkin", () => {
       description: "",
     };
     expect(getFeaturedSkin(c, [])).toBeNull();
+  });
+});
+
+// ── SkinRoulette ───────────────────────────────────────────
+
+describe("SkinRoulette", () => {
+  const defaultProps = {
+    isOpen: true,
+    onClose: vi.fn(),
+    inventory: [
+      mockInventoryItem({ id: "inv-1", sellPrice: 10 }),
+      mockInventoryItem({
+        id: "inv-2",
+        sellPrice: 20,
+        skin: mockSkin({ id: "skin-2", name: "M4A4 | Howl" }),
+      }),
+      mockInventoryItem({
+        id: "inv-3",
+        sellPrice: 50,
+        skin: mockSkin({ id: "skin-3", name: "AWP | Dragon Lore" }),
+      }),
+    ],
+    onRemoveItems: vi.fn(),
+    onAddBalance: vi.fn(),
+    onAddXp: vi.fn(),
+  };
+
+  it("renders when isOpen is true", () => {
+    render(<SkinRoulette {...defaultProps} />);
+    expect(screen.getByText("Skin Roulette")).toBeInTheDocument();
+  });
+
+  it("does not render when isOpen is false", () => {
+    render(<SkinRoulette {...defaultProps} isOpen={false} />);
+    expect(screen.queryByText("Skin Roulette")).not.toBeInTheDocument();
+  });
+
+  it("shows inventory items as selectable buttons", () => {
+    render(<SkinRoulette {...defaultProps} />);
+    expect(screen.getByText("$10.00")).toBeInTheDocument();
+    expect(screen.getByText("$20.00")).toBeInTheDocument();
+    expect(screen.getByText("$50.00")).toBeInTheDocument();
+  });
+
+  it("shows empty state when inventory is empty", () => {
+    render(<SkinRoulette {...defaultProps} inventory={[]} />);
+    expect(screen.getByText("Inventory empty")).toBeInTheDocument();
+  });
+
+  it("shows three color buttons (red, black, green)", () => {
+    render(<SkinRoulette {...defaultProps} />);
+    expect(
+      screen.getByRole("button", { name: /^red7\/15/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /^black7\/15/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /^green1\/15/i }),
+    ).toBeInTheDocument();
+  });
+
+  it("disables spin when no skins are selected", () => {
+    render(<SkinRoulette {...defaultProps} />);
+    const spinBtn = screen.getByText("Select skins to bet");
+    expect(spinBtn).toBeDisabled();
+  });
+
+  it("updates selected count after selecting a skin", () => {
+    render(<SkinRoulette {...defaultProps} />);
+    // Click the first skin button
+    const skinButtons = screen
+      .getAllByRole("button")
+      .filter((b) => b.textContent?.includes("$10.00"));
+    fireEvent.click(skinButtons[0]);
+    expect(screen.getByText("1 selected")).toBeInTheDocument();
+  });
+
+  it("has select-all and clear buttons", () => {
+    render(<SkinRoulette {...defaultProps} />);
+    expect(screen.getByRole("button", { name: /^all$/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /^clear$/i }),
+    ).toBeInTheDocument();
   });
 });

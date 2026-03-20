@@ -133,3 +133,16 @@ export function generateSellPrice(rarityName: string): number {
   const [min, max] = range;
   return Math.round((min + Math.random() * (max - min)) * 100) / 100;
 }
+
+// ── Skin Roulette ────────────────────────────────────
+import type { SkinRouletteResult } from "./types";
+import { SKIN_ROULETTE_SEGMENTS } from "./constants";
+
+/** Spin the roulette wheel — uniform random across all 15 segments. */
+export function spinSkinRoulette(): SkinRouletteResult {
+  const idx = Math.floor(Math.random() * SKIN_ROULETTE_SEGMENTS.length);
+  return {
+    winningSegment: SKIN_ROULETTE_SEGMENTS[idx],
+    winningIndex: idx,
+  };
+}
