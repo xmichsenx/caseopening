@@ -11,6 +11,13 @@ import {
 } from "./constants";
 import { getSkinsByRarity } from "./api";
 
+/** Crypto-grade random float in [0, 1) — better distribution than Math.random(). */
+function cryptoRandom(): number {
+  const buf = new Uint32Array(1);
+  crypto.getRandomValues(buf);
+  return buf[0] / (0xffffffff + 1);
+}
+
 export function computeSkinPrice(skin: Skin, index: number): number {
   const range = SELL_PRICE_RANGES[skin.rarity.name] ?? [0.03, 0.5];
   const [min, max] = range;
@@ -36,39 +43,38 @@ export function computeFullPrice(
 /** Roll a random wear tier based on weighted probabilities. */
 export function rollWear(): Wear {
   const total = WEAR_WEIGHTS.reduce((sum, [, w]) => sum + w, 0);
-  let r = Math.random() * total;
+  let r = cryptoRandom() * total;
   for (const [wear, weight] of WEAR_WEIGHTS) {
     r -= weight;
-    if (r <= 0) return wear as Wear;
+    if (r < 0) return wear as Wear;
   }
   return "Field-Tested";
 }
 
 /** Roll whether a skin is StatTrak. */
 export function rollStatTrak(): boolean {
-  return Math.random() * 100 < STATTRAK_CHANCE;
+  return cryptoRandom() * 100 < STATTRAK_CHANCE;
 }
 
 function weightedRandomRarity(weights: Record<string, number>): string {
   const entries = Object.entries(weights);
   const totalWeight = entries.reduce((sum, [, w]) => sum + w, 0);
-  let random = Math.random() * totalWeight;
+  let random = cryptoRandom() * totalWeight;
 
   for (const [rarity, weight] of entries) {
     random -= weight;
-    if (random <= 0) return rarity;
+    if (random < 0) return rarity;
   }
 
-  return entries[0][0];
+  return entries[entries.length - 1][0];
 }
 
 function pickRandomSkin(skins: Skin[], rarity: string): Skin {
   const pool = getSkinsByRarity(skins, rarity);
   if (pool.length === 0) {
-    // Fallback: pick any skin
-    return skins[Math.floor(Math.random() * skins.length)];
+    return skins[Math.floor(cryptoRandom() * skins.length)];
   }
-  return pool[Math.floor(Math.random() * pool.length)];
+  return pool[Math.floor(cryptoRandom() * pool.length)];
 }
 
 export interface RouletteResult {
@@ -131,7 +137,7 @@ export function generateRouletteStrip(
 export function generateSellPrice(rarityName: string): number {
   const range = SELL_PRICE_RANGES[rarityName] ?? [0.03, 0.5];
   const [min, max] = range;
-  return Math.round((min + Math.random() * (max - min)) * 100) / 100;
+  return Math.round((min + cryptoRandom() * (max - min)) * 100) / 100;
 }
 
 // ── Skin Roulette ────────────────────────────────────
@@ -140,7 +146,7 @@ import { SKIN_ROULETTE_SEGMENTS } from "./constants";
 
 /** Spin the roulette wheel — uniform random across all 15 segments. */
 export function spinSkinRoulette(): SkinRouletteResult {
-  const idx = Math.floor(Math.random() * SKIN_ROULETTE_SEGMENTS.length);
+  const idx = Math.floor(cryptoRandom() * SKIN_ROULETTE_SEGMENTS.length);
   return {
     winningSegment: SKIN_ROULETTE_SEGMENTS[idx],
     winningIndex: idx,
@@ -159,5 +165,5 @@ const UPGRADER_HOUSE_EDGE = 0.05;
 export function rollUpgrade(multiplier: number): boolean {
   if (multiplier <= 1) return true;
   const chance = (1 / multiplier) * (1 - UPGRADER_HOUSE_EDGE);
-  return Math.random() < chance;
+  return cryptoRandom() < chance;
 }
