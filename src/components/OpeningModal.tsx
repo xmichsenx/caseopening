@@ -225,7 +225,7 @@ export function OpeningModal({
       aria-modal="true"
       aria-label={`Opening ${caseName}`}
     >
-      <div className="relative w-full max-w-5xl mx-4 max-h-[90vh] overflow-y-auto">
+      <div className="relative w-full max-w-5xl mx-4 max-h-[90vh] flex flex-col">
         {/* Close button */}
         <button
           onClick={onClose}
@@ -243,7 +243,7 @@ export function OpeningModal({
         </button>
 
         {/* Header */}
-        <div className="flex items-center justify-center gap-3 mb-4">
+        <div className="flex-shrink-0 flex items-center justify-center gap-3 mb-4">
           <img
             src={caseImage}
             alt={caseName}
@@ -257,80 +257,86 @@ export function OpeningModal({
           </h2>
         </div>
 
-        {/* Strips */}
-        <div className="flex flex-col gap-3">
-          {strips.map((strip, i) => (
-            <SingleStrip
-              key={i}
-              strip={strip}
-              index={i}
-              total={strips.length}
-              onComplete={handleStripComplete}
-              isTickTracker={i === 0}
-            />
-          ))}
-        </div>
-
-        {/* Winners display */}
-        {showResults && (
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-            {winners.map((w, i) => {
-              if (!w) return null;
-              const item = wonItems?.[i];
-              const isSold = item ? soldIds.has(item.id) : false;
-              return (
-                <div
-                  key={i}
-                  className={`flex flex-col items-center p-3 rounded-xl border-2 transition-opacity ${isSold ? "opacity-40" : "bg-white/5"}`}
-                  style={{
-                    borderColor: RARITY_COLORS[w.rarity.name] ?? "#666",
-                  }}
-                >
-                  <img
-                    src={w.image}
-                    alt={w.name}
-                    className="w-20 h-14 object-contain mb-1"
-                  />
-                  <span
-                    className="text-xs font-bold text-center max-w-[120px] truncate"
-                    style={{ color: RARITY_COLORS[w.rarity.name] ?? "#fff" }}
-                  >
-                    {w.name}
-                  </span>
-                  <span className="text-xs text-gray-500">{w.rarity.name}</span>
-                  {item && (
-                    <span className="text-[10px] text-gray-400">
-                      {item.isStatTrak && (
-                        <span className="text-orange-400">ST™ </span>
-                      )}
-                      {item.wear}
-                    </span>
-                  )}
-                  {item && !isSold && onSellItem && (
-                    <button
-                      onClick={() => {
-                        onSellItem(item.id);
-                        setSoldIds((prev) => new Set(prev).add(item.id));
-                      }}
-                      className="mt-2 px-3 py-1 bg-yellow-500/20 hover:bg-yellow-500/40 text-yellow-400 text-xs font-bold rounded-lg transition-colors cursor-pointer border border-yellow-500/30"
-                    >
-                      Sell ${item.sellPrice.toFixed(2)}
-                    </button>
-                  )}
-                  {isSold && (
-                    <span className="mt-2 text-xs text-gray-500 italic">
-                      Sold
-                    </span>
-                  )}
-                </div>
-              );
-            })}
+        {/* Scrollable middle area */}
+        <div className="flex-1 min-h-0 overflow-y-auto">
+          {/* Strips */}
+          <div className="flex flex-col gap-3">
+            {strips.map((strip, i) => (
+              <SingleStrip
+                key={i}
+                strip={strip}
+                index={i}
+                total={strips.length}
+                onComplete={handleStripComplete}
+                isTickTracker={i === 0}
+              />
+            ))}
           </div>
-        )}
 
-        {/* Sell All + Close */}
+          {/* Winners display */}
+          {showResults && (
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+              {winners.map((w, i) => {
+                if (!w) return null;
+                const item = wonItems?.[i];
+                const isSold = item ? soldIds.has(item.id) : false;
+                return (
+                  <div
+                    key={i}
+                    className={`flex flex-col items-center p-3 rounded-xl border-2 transition-opacity ${isSold ? "opacity-40" : "bg-white/5"}`}
+                    style={{
+                      borderColor: RARITY_COLORS[w.rarity.name] ?? "#666",
+                    }}
+                  >
+                    <img
+                      src={w.image}
+                      alt={w.name}
+                      className="w-20 h-14 object-contain mb-1"
+                    />
+                    <span
+                      className="text-xs font-bold text-center max-w-[120px] truncate"
+                      style={{ color: RARITY_COLORS[w.rarity.name] ?? "#fff" }}
+                    >
+                      {w.name}
+                    </span>
+                    <span className="text-xs text-gray-500">
+                      {w.rarity.name}
+                    </span>
+                    {item && (
+                      <span className="text-[10px] text-gray-400">
+                        {item.isStatTrak && (
+                          <span className="text-orange-400">ST™ </span>
+                        )}
+                        {item.wear}
+                      </span>
+                    )}
+                    {item && !isSold && onSellItem && (
+                      <button
+                        onClick={() => {
+                          onSellItem(item.id);
+                          setSoldIds((prev) => new Set(prev).add(item.id));
+                        }}
+                        className="mt-2 px-3 py-1 bg-yellow-500/20 hover:bg-yellow-500/40 text-yellow-400 text-xs font-bold rounded-lg transition-colors cursor-pointer border border-yellow-500/30"
+                      >
+                        Sell ${item.sellPrice.toFixed(2)}
+                      </button>
+                    )}
+                    {isSold && (
+                      <span className="mt-2 text-xs text-gray-500 italic">
+                        Sold
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+        {/* end scrollable middle area */}
+
+        {/* Sell All + Close – pinned at bottom */}
         {showResults && (
-          <div className="text-center mt-4 flex flex-wrap items-center justify-center gap-3">
+          <div className="flex-shrink-0 text-center pt-4 pb-2 flex flex-wrap items-center justify-center gap-3">
             {wonItems &&
               onSellItem &&
               wonItems.length > 0 &&
