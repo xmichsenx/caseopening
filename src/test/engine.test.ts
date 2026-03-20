@@ -4,6 +4,7 @@ import {
   generateRouletteStrip,
   generateSellPrice,
   spinSkinRoulette,
+  rollUpgrade,
 } from "../engine";
 import {
   ROULETTE_ITEM_COUNT,
@@ -163,5 +164,40 @@ describe("spinSkinRoulette", () => {
       if (seen.size === 3) break;
     }
     expect(seen.size).toBe(3);
+  });
+});
+
+describe("rollUpgrade", () => {
+  it("returns a boolean", () => {
+    const result = rollUpgrade(2);
+    expect(typeof result).toBe("boolean");
+  });
+
+  it("always succeeds at multiplier 1", () => {
+    for (let i = 0; i < 100; i++) {
+      expect(rollUpgrade(1)).toBe(true);
+    }
+  });
+
+  it("succeeds approximately 47.5% at 2× over many rolls", () => {
+    let wins = 0;
+    const trials = 5000;
+    for (let i = 0; i < trials; i++) {
+      if (rollUpgrade(2)) wins++;
+    }
+    const rate = wins / trials;
+    // Expected 47.5%, allow ±5% tolerance
+    expect(rate).toBeGreaterThan(0.4);
+    expect(rate).toBeLessThan(0.55);
+  });
+
+  it("almost never succeeds at 100×", () => {
+    let wins = 0;
+    const trials = 5000;
+    for (let i = 0; i < trials; i++) {
+      if (rollUpgrade(100)) wins++;
+    }
+    // Expected 0.95%, should be well under 3%
+    expect(wins / trials).toBeLessThan(0.03);
   });
 });

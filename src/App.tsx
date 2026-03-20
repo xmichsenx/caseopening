@@ -12,6 +12,7 @@ import { CaseBattle } from "./components/CaseBattle";
 import { Inventory } from "./components/Inventory";
 import { CaseDetailModal } from "./components/CaseDetailModal";
 import { SkinRoulette } from "./components/SkinRoulette";
+import { Upgrader } from "./components/Upgrader";
 
 const CASES: CaseDefinition[] = [
   // ── Free Tier ($0) ─────────────────────────────────────
@@ -640,6 +641,7 @@ export function App() {
   const [modalStrips, setModalStrips] = useState<Skin[][]>([]);
   const [battleOpen, setBattleOpen] = useState(false);
   const [rouletteOpen, setRouletteOpen] = useState(false);
+  const [upgraderOpen, setUpgraderOpen] = useState(false);
 
   // Get skins specific to the selected case (filtered by weapon category, then limited to case pool)
   const caseSkins = useMemo(() => {
@@ -804,7 +806,7 @@ export function App() {
           GLOBAL OFFENSIVE
         </h1>
         <p className="text-xs text-gray-500 uppercase tracking-[0.4em] mt-2 font-medium">
-          Case Simulator 4.7
+          Case Simulator 4.8
         </p>
       </header>
 
@@ -818,12 +820,11 @@ export function App() {
         onReset={resetGame}
       />
 
-      {/* Case Selector */}
-      <div className="flex items-center justify-between mb-2">
-        <div />
+      {/* Game Mode Buttons */}
+      <div className="grid grid-cols-2 gap-3 mb-2">
         <button
           onClick={() => setRouletteOpen(true)}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-black text-sm uppercase tracking-wider transition-all cursor-pointer border-2 hover:scale-105"
+          className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm uppercase tracking-wider transition-all cursor-pointer border-2 hover:scale-[1.02]"
           style={{
             background: "linear-gradient(135deg, #e74c3c30, #27ae6030)",
             borderColor: "#e74c3c60",
@@ -832,6 +833,18 @@ export function App() {
         >
           <span className="text-base">🎰</span>
           Skin Roulette
+        </button>
+        <button
+          onClick={() => setUpgraderOpen(true)}
+          className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm uppercase tracking-wider transition-all cursor-pointer border-2 hover:scale-[1.02]"
+          style={{
+            background: "linear-gradient(135deg, #f39c1230, #e67e2230)",
+            borderColor: "#f39c1260",
+            color: "#f39c12",
+          }}
+        >
+          <span className="text-base">⚡</span>
+          Upgrader
         </button>
       </div>
 
@@ -892,6 +905,16 @@ export function App() {
       <SkinRoulette
         isOpen={rouletteOpen}
         onClose={() => setRouletteOpen(false)}
+        inventory={state.inventory}
+        onRemoveItems={removeItems}
+        onAddBalance={addBalance}
+        onAddXp={addXp}
+      />
+
+      {/* Upgrader */}
+      <Upgrader
+        isOpen={upgraderOpen}
+        onClose={() => setUpgraderOpen(false)}
         inventory={state.inventory}
         onRemoveItems={removeItems}
         onAddBalance={addBalance}

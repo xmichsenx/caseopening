@@ -7,6 +7,7 @@ import { CaseSelector } from "../components/CaseSelector";
 import { OpeningModal } from "../components/OpeningModal";
 import { CaseBattle } from "../components/CaseBattle";
 import { SkinRoulette } from "../components/SkinRoulette";
+import { Upgrader } from "../components/Upgrader";
 import { getFeaturedSkin } from "../components/CaseSelector";
 
 vi.mock("../audio", () => ({
@@ -496,5 +497,89 @@ describe("SkinRoulette", () => {
     expect(
       screen.getByRole("button", { name: /^clear$/i }),
     ).toBeInTheDocument();
+  });
+});
+
+// ── Upgrader ───────────────────────────────────────────────
+
+describe("Upgrader", () => {
+  const defaultProps = {
+    isOpen: true,
+    onClose: vi.fn(),
+    inventory: [
+      mockInventoryItem({ id: "inv-1", sellPrice: 10 }),
+      mockInventoryItem({
+        id: "inv-2",
+        sellPrice: 20,
+        skin: mockSkin({ id: "skin-2", name: "M4A4 | Howl" }),
+      }),
+      mockInventoryItem({
+        id: "inv-3",
+        sellPrice: 50,
+        skin: mockSkin({ id: "skin-3", name: "AWP | Dragon Lore" }),
+      }),
+    ],
+    onRemoveItems: vi.fn(),
+    onAddBalance: vi.fn(),
+    onAddXp: vi.fn(),
+  };
+
+  it("renders when isOpen is true", () => {
+    render(<Upgrader {...defaultProps} />);
+    expect(screen.getByText("Upgrader")).toBeInTheDocument();
+  });
+
+  it("does not render when isOpen is false", () => {
+    render(<Upgrader {...defaultProps} isOpen={false} />);
+    expect(screen.queryByText("Upgrader")).not.toBeInTheDocument();
+  });
+
+  it("shows inventory items as selectable buttons", () => {
+    render(<Upgrader {...defaultProps} />);
+    expect(screen.getByText("$10.00")).toBeInTheDocument();
+    expect(screen.getByText("$20.00")).toBeInTheDocument();
+    expect(screen.getByText("$50.00")).toBeInTheDocument();
+  });
+
+  it("shows empty state when inventory is empty", () => {
+    render(<Upgrader {...defaultProps} inventory={[]} />);
+    expect(screen.getByText("Inventory empty")).toBeInTheDocument();
+  });
+
+  it("shows multiplier preset buttons", () => {
+    render(<Upgrader {...defaultProps} />);
+    expect(screen.getAllByText("2×").length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText("5×").length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText("10×").length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText("25×").length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText("50×").length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("shows the default success chance for 2× multiplier", () => {
+    render(<Upgrader {...defaultProps} />);
+    // 2× => (1/2) * 0.95 * 100 = 47.5%
+    expect(screen.getAllByText("47.5%").length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("disables upgrade button when no skin is selected", () => {
+    render(<Upgrader {...defaultProps} />);
+    const btn = screen.getByText("Select a skin");
+    expect(btn).toBeDisabled();
+  });
+
+  it("shows select a skin placeholder when nothing selected", () => {
+    render(<Upgrader {...defaultProps} />);
+    expect(screen.getByText("Select a skin to upgrade")).toBeInTheDocument();
+  });
+
+  it("displays target value after selecting a skin", () => {
+    render(<Upgrader {...defaultProps} />);
+    // Click the $50.00 skin (AWP | Dragon Lore)
+    const skinButtons = screen
+      .getAllByRole("button")
+      .filter((b) => b.textContent?.includes("$50.00"));
+    fireEvent.click(skinButtons[0]);
+    // 50 * 2 = $100.00 target — shown in info card and stats
+    expect(screen.getAllByText("$100.00").length).toBeGreaterThanOrEqual(1);
   });
 });

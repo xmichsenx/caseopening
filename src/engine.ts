@@ -146,3 +146,18 @@ export function spinSkinRoulette(): SkinRouletteResult {
     winningIndex: idx,
   };
 }
+
+// ── Upgrader ─────────────────────────────────────────
+
+const UPGRADER_HOUSE_EDGE = 0.05;
+
+/**
+ * Roll an upgrade attempt. Success chance = (1 / multiplier) × (1 - houseEdge).
+ * @param multiplier Target multiplier (>=1). At 2× real chance is 47.5%.
+ * @returns true if upgrade succeeds.
+ */
+export function rollUpgrade(multiplier: number): boolean {
+  if (multiplier <= 1) return true;
+  const chance = (1 / multiplier) * (1 - UPGRADER_HOUSE_EDGE);
+  return Math.random() < chance;
+}
