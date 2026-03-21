@@ -89,6 +89,8 @@ export function Rocket({
   const windowCleanupRef = useRef<(() => void) | null>(null);
   const currentMultiplierRef = useRef(1.0);
   const crashPointStateRef = useRef(0);
+  /** Whether the current hold was initiated via touch (vs mouse). */
+  const isTouchHoldRef = useRef(false);
 
   // Clean up on unmount
   useEffect(() => {
@@ -183,6 +185,9 @@ export function Rocket({
     // This prevents the bug where a quick click's mouseup fires before
     // useEffect registers its listeners, leaving the user stuck.
     cleanupWindowListeners(); // clear any stale ones
+
+    const isTouch = isTouchHoldRef.current;
+
     const onRelease = () => {
       const elapsed = Date.now() - holdStartTimeRef.current;
       if (elapsed < 200) {
@@ -192,17 +197,35 @@ export function Rocket({
         doHoldEnd(false);
       }
     };
-    const onBlur = () => doHoldEnd(false);
+
+    // On mobile, blur fires spuriously during long-press (e.g. address bar
+    // appearing, OS notification). Only treat blur as cash-out for mouse.
+    const onBlur = () => {
+      if (!isTouchHoldRef.current) doHoldEnd(false);
+    };
     const onVisibility = () => {
       if (document.hidden) doHoldEnd(false);
     };
-    const onContext = (e: MouseEvent) => {
+    const onContext = (e: Event) => {
       e.preventDefault();
-      doHoldEnd(false);
+      // On mobile, long-press context menu shouldn't end the game
+      if (!isTouchHoldRef.current) doHoldEnd(false);
     };
 
-    window.addEventListener("mouseup", onRelease);
-    window.addEventListener("touchend", onRelease);
+    // Prevent touch-move from scrolling the page underneath the hold
+    const onTouchMove = (e: TouchEvent) => {
+      e.preventDefault();
+    };
+
+    if (isTouch) {
+      // Touch: only listen for touchend + touchcancel (NOT mouseup)
+      window.addEventListener("touchend", onRelease);
+      window.addEventListener("touchcancel", onRelease);
+      window.addEventListener("touchmove", onTouchMove, { passive: false });
+    } else {
+      // Mouse: only listen for mouseup (NOT touchend)
+      window.addEventListener("mouseup", onRelease);
+    }
     window.addEventListener("blur", onBlur);
     document.addEventListener("visibilitychange", onVisibility);
     window.addEventListener("contextmenu", onContext);
@@ -210,6 +233,8 @@ export function Rocket({
     windowCleanupRef.current = () => {
       window.removeEventListener("mouseup", onRelease);
       window.removeEventListener("touchend", onRelease);
+      window.removeEventListener("touchcancel", onRelease);
+      window.removeEventListener("touchmove", onTouchMove);
       window.removeEventListener("blur", onBlur);
       document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("contextmenu", onContext);
@@ -686,11 +711,19 @@ export function Rocket({
 
               {/* HOLD TO FLY button */}
               <button
-                onMouseDown={phase === "idle" ? handleHoldStart : undefined}
+                onMouseDown={
+                  phase === "idle"
+                    ? () => {
+                        isTouchHoldRef.current = false;
+                        handleHoldStart();
+                      }
+                    : undefined
+                }
                 onTouchStart={
                   phase === "idle"
                     ? (e) => {
                         e.preventDefault();
+                        isTouchHoldRef.current = true;
                         handleHoldStart();
                       }
                     : undefined
