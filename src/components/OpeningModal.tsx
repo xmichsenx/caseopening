@@ -43,19 +43,15 @@ function SingleStrip({
   const height = total === 1 ? "h-48" : "h-32";
 
   useEffect(() => {
-    // Stagger start by index * 200ms
-    const timer = setTimeout(() => {
-      if (containerRef.current) {
-        const containerWidth = containerRef.current.offsetWidth;
-        const winnerCenter = WINNER_INDEX * ITEM_TOTAL + ITEM_WIDTH / 2;
-        const jitter = (Math.random() - 0.5) * (ITEM_WIDTH * 0.6);
-        setOffset(-(winnerCenter - containerWidth / 2 + jitter));
-        setStarted(true);
-        lastTickIndex.current = -1;
-      }
-    }, index * 200);
-    return () => clearTimeout(timer);
-  }, [index]);
+    if (containerRef.current) {
+      const containerWidth = containerRef.current.offsetWidth;
+      const winnerCenter = WINNER_INDEX * ITEM_TOTAL + ITEM_WIDTH / 2;
+      const jitter = (Math.random() - 0.5) * (ITEM_WIDTH * 0.6);
+      setOffset(-(winnerCenter - containerWidth / 2 + jitter));
+      setStarted(true);
+      lastTickIndex.current = -1;
+    }
+  }, []);
 
   // Tick tracking for first strip only
   useEffect(() => {
@@ -109,7 +105,7 @@ function SingleStrip({
           animate={{ x: started ? offset : 0 }}
           transition={
             started
-              ? { duration: 5 + index * 0.3, ease: [0.15, 0.85, 0.25, 1] }
+              ? { duration: 5, ease: [0.15, 0.85, 0.25, 1] }
               : { duration: 0 }
           }
           onAnimationComplete={handleComplete}
