@@ -291,6 +291,28 @@ export function Rocket({
     }
   }, [phase, cleanupWindowListeners]);
 
+  // Disable text selection globally while holding — on mobile, long-press
+  // can trigger text selection which swallows the touchend event.
+  useEffect(() => {
+    if (phase !== "holding") return;
+
+    const onSelectStart = (e: Event) => e.preventDefault();
+    document.addEventListener("selectstart", onSelectStart);
+    // Also set user-select: none on body as a belt-and-suspenders approach
+    const prev = document.body.style.userSelect;
+    const prevWebkit = document.body.style.getPropertyValue(
+      "-webkit-user-select",
+    );
+    document.body.style.userSelect = "none";
+    document.body.style.setProperty("-webkit-user-select", "none");
+
+    return () => {
+      document.removeEventListener("selectstart", onSelectStart);
+      document.body.style.userSelect = prev;
+      document.body.style.setProperty("-webkit-user-select", prevWebkit);
+    };
+  }, [phase]);
+
   // ── Reset to idle after result ─────────
   const handleNewRound = useCallback(() => {
     setPhase("idle");
@@ -721,15 +743,15 @@ export function Rocket({
                       }
                     : undefined
                 }
-                onTouchStart={
-                  phase === "idle"
-                    ? (e) => {
-                        e.preventDefault();
-                        isTouchHoldRef.current = true;
-                        handleHoldStart();
-                      }
-                    : undefined
-                }
+                onTouchStart={(e) => {
+                  // Always preventDefault on touch to block text selection and
+                  // synthetic mouse events — even during non-idle phases.
+                  e.preventDefault();
+                  if (phase === "idle") {
+                    isTouchHoldRef.current = true;
+                    handleHoldStart();
+                  }
+                }}
                 disabled={!canBet}
                 className="w-full py-4 sm:py-5 rounded-xl font-black text-sm sm:text-base uppercase tracking-wider transition-all cursor-pointer border-2 disabled:opacity-30 disabled:cursor-not-allowed hover:scale-[1.01] select-none touch-none"
                 style={{
