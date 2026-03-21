@@ -218,10 +218,12 @@ export function Rocket({
     };
 
     if (isTouch) {
-      // Touch: only listen for touchend + touchcancel (NOT mouseup)
-      window.addEventListener("touchend", onRelease);
-      window.addEventListener("touchcancel", onRelease);
-      window.addEventListener("touchmove", onTouchMove, { passive: false });
+      // Touch: listen for touchend + touchcancel on document (NOT window —
+      // some mobile browsers don't bubble touch events to window when the
+      // originating element has touch-action:none).
+      document.addEventListener("touchend", onRelease);
+      document.addEventListener("touchcancel", onRelease);
+      document.addEventListener("touchmove", onTouchMove, { passive: false });
     } else {
       // Mouse: only listen for mouseup (NOT touchend)
       window.addEventListener("mouseup", onRelease);
@@ -232,9 +234,9 @@ export function Rocket({
 
     windowCleanupRef.current = () => {
       window.removeEventListener("mouseup", onRelease);
-      window.removeEventListener("touchend", onRelease);
-      window.removeEventListener("touchcancel", onRelease);
-      window.removeEventListener("touchmove", onTouchMove);
+      document.removeEventListener("touchend", onRelease);
+      document.removeEventListener("touchcancel", onRelease);
+      document.removeEventListener("touchmove", onTouchMove);
       window.removeEventListener("blur", onBlur);
       document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("contextmenu", onContext);
