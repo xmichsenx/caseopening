@@ -13,6 +13,7 @@ import { Inventory } from "./components/Inventory";
 import { CaseDetailModal } from "./components/CaseDetailModal";
 import { SkinRoulette } from "./components/SkinRoulette";
 import { Upgrader } from "./components/Upgrader";
+import { Crash } from "./components/Crash";
 
 const CASES: CaseDefinition[] = [
   // ── Free Tier ($0) ─────────────────────────────────────
@@ -642,6 +643,7 @@ export function App() {
   const [battleOpen, setBattleOpen] = useState(false);
   const [rouletteOpen, setRouletteOpen] = useState(false);
   const [upgraderOpen, setUpgraderOpen] = useState(false);
+  const [crashOpen, setCrashOpen] = useState(false);
 
   // Get skins specific to the selected case (filtered by weapon category, then limited to case pool)
   const caseSkins = useMemo(() => {
@@ -821,7 +823,7 @@ export function App() {
       />
 
       {/* Game Mode Buttons */}
-      <div className="grid grid-cols-2 gap-3 mb-2">
+      <div className="grid grid-cols-3 gap-3 mb-2">
         <button
           onClick={() => setRouletteOpen(true)}
           className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm uppercase tracking-wider transition-all cursor-pointer border-2 hover:scale-[1.02]"
@@ -845,6 +847,18 @@ export function App() {
         >
           <span className="text-base">⚡</span>
           Upgrader
+        </button>
+        <button
+          onClick={() => setCrashOpen(true)}
+          className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm uppercase tracking-wider transition-all cursor-pointer border-2 hover:scale-[1.02]"
+          style={{
+            background: "linear-gradient(135deg, #27ae6030, #2ecc7130)",
+            borderColor: "#27ae6060",
+            color: "#27ae60",
+          }}
+        >
+          <span className="text-base">🚀</span>
+          Crash
         </button>
       </div>
 
@@ -917,6 +931,16 @@ export function App() {
         onClose={() => setUpgraderOpen(false)}
         inventory={state.inventory}
         onRemoveItems={removeItems}
+        onAddBalance={addBalance}
+        onAddXp={addXp}
+      />
+
+      {/* Crash */}
+      <Crash
+        isOpen={crashOpen}
+        onClose={() => setCrashOpen(false)}
+        balance={state.balance}
+        onSpendBalance={spendBalance}
         onAddBalance={addBalance}
         onAddXp={addXp}
       />

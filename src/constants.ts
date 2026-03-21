@@ -96,3 +96,17 @@ export const SKIN_ROULETTE_COLORS: Record<RouletteColor, string> = {
   black: "#2c3e50",
   green: "#27ae60",
 };
+
+// ── Crash ────────────────────────────────────────────
+
+/** House edge for the Crash game mode (2%). */
+export const CRASH_HOUSE_EDGE = 0.02;
+
+/** Maximum multiplier before forced cash-out. */
+export const CRASH_MAX_MULTIPLIER = 100;
+
+/** Tick interval in ms — 20 updates/sec for smooth animation. */
+export const CRASH_TICK_INTERVAL_MS = 50;
+
+/** Controls how fast the multiplier accelerates. */
+export const CRASH_SPEED_FACTOR = 0.00006;

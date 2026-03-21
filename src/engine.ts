@@ -167,3 +167,19 @@ export function rollUpgrade(multiplier: number): boolean {
   const chance = (1 / multiplier) * (1 - UPGRADER_HOUSE_EDGE);
   return cryptoRandom() < chance;
 }
+
+// ── Crash ────────────────────────────────────────────
+import { CRASH_HOUSE_EDGE, CRASH_MAX_MULTIPLIER } from "./constants";
+
+/**
+ * Generate a crash point using an exponential distribution with house edge.
+ * Formula: max(1.0, floor((1 - houseEdge) / (1 - r) * 100) / 100)
+ * ~2% instant-crash at 1.00x, ~50% below 2.00x, ~1% above 100x.
+ */
+export function generateCrashPoint(): number {
+  const r = cryptoRandom();
+  // Avoid division by zero: if r >= 1 - epsilon, cap at max
+  if (r >= 1 - 1e-9) return CRASH_MAX_MULTIPLIER;
+  const point = Math.floor(((1 - CRASH_HOUSE_EDGE) / (1 - r)) * 100) / 100;
+  return Math.min(Math.max(1, point), CRASH_MAX_MULTIPLIER);
+}

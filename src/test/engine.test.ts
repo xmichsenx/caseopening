@@ -5,12 +5,14 @@ import {
   generateSellPrice,
   spinSkinRoulette,
   rollUpgrade,
+  generateCrashPoint,
 } from "../engine";
 import {
   ROULETTE_ITEM_COUNT,
   WINNER_INDEX,
   SELL_PRICE_RANGES,
   SKIN_ROULETTE_SEGMENTS,
+  CRASH_MAX_MULTIPLIER,
 } from "../constants";
 
 const mockSkins: Skin[] = [
@@ -199,5 +201,50 @@ describe("rollUpgrade", () => {
     }
     // Expected 0.95%, should be well under 3%
     expect(wins / trials).toBeLessThan(0.03);
+  });
+});
+
+// ── Crash ──────────────────────────────────────────────────
+
+describe("generateCrashPoint", () => {
+  it("always returns a value >= 1.0", () => {
+    for (let i = 0; i < 1000; i++) {
+      expect(generateCrashPoint()).toBeGreaterThanOrEqual(1);
+    }
+  });
+
+  it("never exceeds CRASH_MAX_MULTIPLIER", () => {
+    for (let i = 0; i < 1000; i++) {
+      expect(generateCrashPoint()).toBeLessThanOrEqual(CRASH_MAX_MULTIPLIER);
+    }
+  });
+
+  it("returns a number with at most 2 decimal places", () => {
+    for (let i = 0; i < 200; i++) {
+      const point = generateCrashPoint();
+      expect(Math.round(point * 100) / 100).toBe(point);
+    }
+  });
+
+  it("approximately 50% of crash points are below 2.0× (house edge distribution)", () => {
+    let below2 = 0;
+    const trials = 10000;
+    for (let i = 0; i < trials; i++) {
+      if (generateCrashPoint() < 2) below2++;
+    }
+    const rate = below2 / trials;
+    // Expected ~51%, allow ±8% tolerance
+    expect(rate).toBeGreaterThan(0.4);
+    expect(rate).toBeLessThan(0.62);
+  });
+
+  it("some crash points reach high multipliers (>10×) over many trials", () => {
+    let above10 = 0;
+    const trials = 5000;
+    for (let i = 0; i < trials; i++) {
+      if (generateCrashPoint() > 10) above10++;
+    }
+    // Expected ~9.8%, should be at least 5%
+    expect(above10 / trials).toBeGreaterThan(0.03);
   });
 });

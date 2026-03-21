@@ -8,6 +8,7 @@ import { OpeningModal } from "../components/OpeningModal";
 import { CaseBattle } from "../components/CaseBattle";
 import { SkinRoulette } from "../components/SkinRoulette";
 import { Upgrader } from "../components/Upgrader";
+import { Crash } from "../components/Crash";
 import { getFeaturedSkin } from "../components/CaseSelector";
 
 vi.mock("../audio", () => ({
@@ -36,7 +37,26 @@ vi.mock("framer-motion", () => ({
         <svg {...(rest as React.SVGAttributes<SVGSVGElement>)}>{children}</svg>
       );
     },
+    button: ({
+      children,
+      ...props
+    }: React.ButtonHTMLAttributes<HTMLButtonElement> & {
+      [key: string]: unknown;
+    }) => {
+      const { animate, transition, initial, ...rest } = props as Record<
+        string,
+        unknown
+      >;
+      return (
+        <button {...(rest as React.ButtonHTMLAttributes<HTMLButtonElement>)}>
+          {children}
+        </button>
+      );
+    },
   },
+  AnimatePresence: ({ children }: { children: React.ReactNode }) => (
+    <>{children}</>
+  ),
 }));
 
 // ── Mock Data ──────────────────────────────────────────────
@@ -581,5 +601,82 @@ describe("Upgrader", () => {
     fireEvent.click(skinButtons[0]);
     // 50 * 2 = $100.00 target — shown in info card and stats
     expect(screen.getAllByText("$100.00").length).toBeGreaterThanOrEqual(1);
+  });
+});
+
+// ── Crash ───────────────────────────────────────────────────────
+
+describe("Crash", () => {
+  const defaultProps = {
+    isOpen: true,
+    onClose: vi.fn(),
+    balance: 100,
+    onSpendBalance: vi.fn(() => true),
+    onAddBalance: vi.fn(),
+    onAddXp: vi.fn(),
+  };
+
+  it("renders when isOpen is true", () => {
+    render(<Crash {...defaultProps} />);
+    expect(screen.getByText("Crash")).toBeInTheDocument();
+  });
+
+  it("does not render when isOpen is false", () => {
+    render(<Crash {...defaultProps} isOpen={false} />);
+    expect(screen.queryByText("Crash")).not.toBeInTheDocument();
+  });
+
+  it("shows balance in the header", () => {
+    render(<Crash {...defaultProps} balance={42.5} />);
+    expect(screen.getByText("$42.50")).toBeInTheDocument();
+  });
+
+  it("shows quick bet buttons", () => {
+    render(<Crash {...defaultProps} />);
+    expect(screen.getByText("$1")).toBeInTheDocument();
+    expect(screen.getByText("$5")).toBeInTheDocument();
+    expect(screen.getByText("$10")).toBeInTheDocument();
+    expect(screen.getByText("$25")).toBeInTheDocument();
+    expect(screen.getByText("$50")).toBeInTheDocument();
+  });
+
+  it("shows auto cashout presets", () => {
+    render(<Crash {...defaultProps} />);
+    expect(screen.getByText("1.5×")).toBeInTheDocument();
+    expect(screen.getByText("2×")).toBeInTheDocument();
+    expect(screen.getByText("3×")).toBeInTheDocument();
+    expect(screen.getByText("5×")).toBeInTheDocument();
+    expect(screen.getByText("10×")).toBeInTheDocument();
+  });
+
+  it("shows Place your bet text in idle state", () => {
+    render(<Crash {...defaultProps} />);
+    expect(screen.getByText("Place your bet")).toBeInTheDocument();
+  });
+
+  it("disables bet when balance is 0", () => {
+    render(<Crash {...defaultProps} balance={0} />);
+    const betButton = screen.getByText("Insufficient balance");
+    expect(betButton).toBeDisabled();
+  });
+
+  it("shows house edge and max info", () => {
+    render(<Crash {...defaultProps} />);
+    expect(screen.getByText("House edge: 2%")).toBeInTheDocument();
+    expect(screen.getByText("Max: 100×")).toBeInTheDocument();
+  });
+
+  it("calls onSpendBalance when bet button is clicked", () => {
+    const onSpend = vi.fn(() => true);
+    render(<Crash {...defaultProps} onSpendBalance={onSpend} />);
+    const betButton = screen.getByText("Bet $5.00");
+    fireEvent.click(betButton);
+    expect(onSpend).toHaveBeenCalledWith(5);
+  });
+
+  it("sets bet amount via quick bet buttons", () => {
+    render(<Crash {...defaultProps} />);
+    fireEvent.click(screen.getByText("$25"));
+    expect(screen.getByText("Bet $25.00")).toBeInTheDocument();
   });
 });
