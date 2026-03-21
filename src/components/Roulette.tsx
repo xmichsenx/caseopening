@@ -53,20 +53,17 @@ export function Roulette({
       setOffset(newOffset);
       lastTickIndex.current = -1;
 
-      // Start tracking item positions for tick sounds
+      // Track actual rendered position for tick sounds
       const trackTicks = () => {
         if (stripRef.current && containerRef.current) {
-          const stripX = new DOMMatrix(
-            getComputedStyle(stripRef.current).transform,
-          ).m41;
-          const containerCenter = containerRef.current.offsetWidth / 2;
-          // Which item index is currently at the center?
+          const stripLeft = stripRef.current.getBoundingClientRect().left;
+          const containerRect = containerRef.current.getBoundingClientRect();
+          const containerCenter = containerRect.left + containerRect.width / 2;
           const currentIndex = Math.floor(
-            (containerCenter - stripX - 16) / ITEM_TOTAL,
-          ); // 16 = px-4 padding
+            (containerCenter - stripLeft - 16) / ITEM_TOTAL,
+          );
           if (currentIndex > lastTickIndex.current && currentIndex >= 0) {
             lastTickIndex.current = currentIndex;
-            // Pitch slightly higher as we slow down near the end
             const progress = currentIndex / (WINNER_INDEX + 2);
             playTick(0.8 + progress * 0.5);
           }

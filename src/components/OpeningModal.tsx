@@ -53,18 +53,17 @@ function SingleStrip({
     }
   }, []);
 
-  // Tick tracking for first strip only
+  // Track actual rendered position for tick sounds
   useEffect(() => {
     if (!started || !isTickTracker) return;
 
     const trackTicks = () => {
       if (stripRef.current && containerRef.current) {
-        const stripX = new DOMMatrix(
-          getComputedStyle(stripRef.current).transform,
-        ).m41;
-        const containerCenter = containerRef.current.offsetWidth / 2;
+        const stripLeft = stripRef.current.getBoundingClientRect().left;
+        const containerRect = containerRef.current.getBoundingClientRect();
+        const containerCenter = containerRect.left + containerRect.width / 2;
         const currentIndex = Math.floor(
-          (containerCenter - stripX - 16) / ITEM_TOTAL,
+          (containerCenter - stripLeft - 16) / ITEM_TOTAL,
         );
         if (currentIndex > lastTickIndex.current && currentIndex >= 0) {
           lastTickIndex.current = currentIndex;

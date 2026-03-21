@@ -31,6 +31,26 @@ const RARITY_ORDER: Record<string, number> = {
 
 const SEGMENT_COUNT = SKIN_ROULETTE_SEGMENTS.length;
 const SEGMENT_ANGLE = 360 / SEGMENT_COUNT;
+const SPIN_DURATION_MS = 5000;
+
+/** Cubic-bezier(0.15, 0.85, 0.25, 1) matching the Framer Motion spin easing. */
+function spinEase(t: number): number {
+  const x1 = 0.15,
+    y1 = 0.85,
+    x2 = 0.25,
+    y2 = 1;
+  let lo = 0,
+    hi = 1;
+  for (let i = 0; i < 20; i++) {
+    const mid = (lo + hi) / 2;
+    const bx =
+      3 * (1 - mid) ** 2 * mid * x1 + 3 * (1 - mid) * mid ** 2 * x2 + mid ** 3;
+    if (bx < t) lo = mid;
+    else hi = mid;
+  }
+  const u = (lo + hi) / 2;
+  return 3 * (1 - u) ** 2 * u * y1 + 3 * (1 - u) * u ** 2 * y2 + u ** 3;
+}
 
 export function SkinRoulette({
   isOpen,
@@ -154,20 +174,31 @@ export function SkinRoulette({
 
     setWheelRotation(targetRotation);
 
-    // Tick sounds during spin
-    let tickCount = 0;
-    const tickInterval = setInterval(() => {
-      tickCount++;
-      if (tickCount < 40) {
+    // Tick sounds synced to the easing curve — tick whenever a new segment crosses the pointer
+    const totalDegrees = targetRotation - wheelRotation;
+    const startRotation = wheelRotation;
+    let lastSegmentIndex = -1;
+    const startTime = performance.now();
+    let tickRaf = 0;
+
+    const trackWheelTicks = () => {
+      const elapsed = performance.now() - startTime;
+      const t = Math.min(elapsed / SPIN_DURATION_MS, 1);
+      const currentDegrees = startRotation + totalDegrees * spinEase(t);
+      const segIndex = Math.floor(currentDegrees / SEGMENT_ANGLE);
+      if (segIndex > lastSegmentIndex) {
+        lastSegmentIndex = segIndex;
         playTick(0.8 + Math.random() * 0.4);
-      } else {
-        clearInterval(tickInterval);
       }
-    }, 100);
+      if (t < 1) {
+        tickRaf = requestAnimationFrame(trackWheelTicks);
+      }
+    };
+    tickRaf = requestAnimationFrame(trackWheelTicks);
 
     // Result after animation
     setTimeout(() => {
-      clearInterval(tickInterval);
+      cancelAnimationFrame(tickRaf);
       setSpinning(false);
       setResult({ won, payout, color: winningColor });
       setHistory((prev) => [winningColor, ...prev].slice(0, 20));
