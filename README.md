@@ -15,6 +15,10 @@ It's a risk-free way to experience the thrill (and heartbreak) of CS2 case openi
 - **StatTrak™** — 10% chance on any drop, 3× price multiplier
 - **XP & leveling** — unlock better free cases as you level up
 - **Case battles** — 1v1, 1v2, or 1v3 against bots
+- **Skin Roulette** — wager skins on a Red/Black/Green wheel
+- **Upgrader** — risk a skin for a multiplied balance payout
+- **Crash** — bet balance on a rising multiplier, cash out before it crashes
+- **Mobile responsive** — all game modes playable on small screens
 - **Inventory management** — sort, sell individual items, or bulk sell
 - **Persistent progress** — everything saves to localStorage
 
@@ -76,6 +80,9 @@ src/
     OpeningModal    — roulette animation (single & multi-open)
     Roulette        — standalone roulette strip
     CaseBattle      — PvE case battle mode
+    SkinRoulette    — Red/Black/Green wheel betting
+    Upgrader        — skin upgrade with risk meter
+    Crash           — rising multiplier crash game
     Dashboard       — balance, level, XP bar
     Inventory       — skin grid with sorting & selling
   hooks/

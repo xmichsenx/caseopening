@@ -289,7 +289,7 @@ export function SkinRoulette({
             </div>
 
             {/* Scrollable skin list */}
-            <div className="flex-1 overflow-y-auto p-3 max-h-[240px] lg:max-h-[unset]">
+            <div className="flex-1 overflow-y-auto p-3 max-h-[120px] lg:max-h-[unset]">
               {inventory.length === 0 ? (
                 <div className="text-center py-8">
                   <p className="text-sm text-gray-500">Inventory empty</p>
@@ -360,7 +360,7 @@ export function SkinRoulette({
           </div>
 
           {/* Center/Right: Wheel + Controls */}
-          <div className="flex-1 flex flex-col items-center justify-center p-6 gap-6 overflow-y-auto">
+          <div className="flex-1 flex flex-col items-center justify-center p-3 gap-3 lg:p-6 lg:gap-6 overflow-y-auto">
             {/* History */}
             {history.length > 0 && (
               <div className="flex items-center gap-1.5">
@@ -386,7 +386,7 @@ export function SkinRoulette({
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20 w-0 h-0 border-l-[10px] border-r-[10px] border-t-[18px] border-l-transparent border-r-transparent border-t-yellow-400 drop-shadow-lg" />
 
               {/* Wheel container */}
-              <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-4 border-white/20 shadow-2xl">
+              <div className="relative w-48 h-48 md:w-64 md:h-64 lg:w-80 lg:h-80 rounded-full overflow-hidden border-4 border-white/20 shadow-2xl">
                 {/* SVG wheel */}
                 <motion.svg
                   viewBox="0 0 100 100"

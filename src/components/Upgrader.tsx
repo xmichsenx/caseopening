@@ -249,7 +249,7 @@ export function Upgrader({
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-3 max-h-[200px] lg:max-h-[unset]">
+            <div className="flex-1 overflow-y-auto p-3 max-h-[120px] lg:max-h-[unset]">
               {inventory.length === 0 ? (
                 <div className="text-center py-8">
                   <p className="text-sm text-gray-500">Inventory empty</p>
@@ -308,7 +308,7 @@ export function Upgrader({
           </div>
 
           {/* Center: Upgrade Meter + Info */}
-          <div className="flex-1 flex flex-col items-center justify-center p-6 gap-5 overflow-y-auto">
+          <div className="flex-1 flex flex-col items-center justify-center p-3 gap-3 lg:p-6 lg:gap-5 overflow-y-auto">
             {/* Selected skin info */}
             {selectedItem ? (
               <div className="flex items-center gap-4 p-3 rounded-xl bg-white/[0.03] border border-white/10 w-full max-w-md">

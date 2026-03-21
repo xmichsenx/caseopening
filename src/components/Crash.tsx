@@ -429,10 +429,16 @@ export function Crash({
                     </span>
                     <input
                       type="number"
+                      inputMode="decimal"
                       min="0.01"
                       step="0.01"
                       value={betInput}
                       onChange={(e) => setBetInput(e.target.value)}
+                      onBlur={() => {
+                        const v = parseFloat(betInput);
+                        if (isNaN(v) || v <= 0) setBetInput("0.01");
+                        else setBetInput(v.toFixed(2));
+                      }}
                       disabled={phase !== "idle"}
                       className="w-full pl-7 pr-3 py-2.5 rounded-lg bg-white/5 border border-white/10 text-white font-bold text-sm focus:outline-none focus:border-green-500/50 disabled:opacity-50"
                     />
