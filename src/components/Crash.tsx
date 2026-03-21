@@ -5,6 +5,7 @@ import {
   CRASH_MAX_MULTIPLIER,
   CRASH_TICK_INTERVAL_MS,
   CRASH_SPEED_FACTOR,
+  CRASH_GRACE_MS,
 } from "../constants";
 
 interface CrashProps {
@@ -115,6 +116,10 @@ export function Crash({
       const x = Math.min(elapsed / maxTime, 1);
       const y = multiplierToY(mult);
       setGraphPoints((prev) => [...prev, [x, y]]);
+
+      // Grace period: skip crash check for the first N ms so the
+      // graph animation is always visible before a crash can trigger.
+      if (elapsed < CRASH_GRACE_MS) return;
 
       if (mult >= point) {
         // CRASH

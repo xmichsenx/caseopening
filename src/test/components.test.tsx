@@ -9,11 +9,15 @@ import { CaseBattle } from "../components/CaseBattle";
 import { SkinRoulette } from "../components/SkinRoulette";
 import { Upgrader } from "../components/Upgrader";
 import { Crash } from "../components/Crash";
+import { Rocket } from "../components/Rocket";
 import { getFeaturedSkin } from "../components/CaseSelector";
 
 vi.mock("../audio", () => ({
   playTick: vi.fn(),
   playWinSound: vi.fn(),
+  playRocketEngine: vi.fn(() => ({ stop: vi.fn() })),
+  playExplosion: vi.fn(),
+  playCashOut: vi.fn(),
 }));
 
 vi.mock("framer-motion", () => ({
@@ -678,5 +682,92 @@ describe("Crash", () => {
     render(<Crash {...defaultProps} />);
     fireEvent.click(screen.getByText("$25"));
     expect(screen.getByText("Bet $25.00")).toBeInTheDocument();
+  });
+});
+
+describe("Rocket", () => {
+  const defaultProps = {
+    isOpen: true,
+    onClose: vi.fn(),
+    balance: 100,
+    onSpendBalance: vi.fn(() => true),
+    onAddBalance: vi.fn(),
+    onAddXp: vi.fn(),
+  };
+
+  it("renders when isOpen is true", () => {
+    render(<Rocket {...defaultProps} />);
+    expect(screen.getByText("Rocket")).toBeInTheDocument();
+  });
+
+  it("does not render when isOpen is false", () => {
+    render(<Rocket {...defaultProps} isOpen={false} />);
+    expect(screen.queryByText("Rocket")).not.toBeInTheDocument();
+  });
+
+  it("shows balance in the header", () => {
+    render(<Rocket {...defaultProps} balance={77.5} />);
+    expect(screen.getByText("$77.50")).toBeInTheDocument();
+  });
+
+  it("shows quick bet buttons", () => {
+    render(<Rocket {...defaultProps} />);
+    expect(screen.getByText("$1")).toBeInTheDocument();
+    expect(screen.getByText("$5")).toBeInTheDocument();
+    expect(screen.getByText("$10")).toBeInTheDocument();
+    expect(screen.getByText("$25")).toBeInTheDocument();
+    expect(screen.getByText("$50")).toBeInTheDocument();
+  });
+
+  it("shows hold to fly idle text", () => {
+    render(<Rocket {...defaultProps} />);
+    expect(screen.getByText("Hold to fly")).toBeInTheDocument();
+  });
+
+  it("shows the hold to fly button with bet amount", () => {
+    render(<Rocket {...defaultProps} />);
+    expect(
+      screen.getByText((content) => content.includes("Hold to Fly")),
+    ).toBeInTheDocument();
+  });
+
+  it("disables hold button when balance is 0", () => {
+    render(<Rocket {...defaultProps} balance={0} />);
+    const btn = screen.getByText("Insufficient balance");
+    expect(btn).toBeDisabled();
+  });
+
+  it("shows house edge and max info", () => {
+    render(<Rocket {...defaultProps} />);
+    expect(screen.getByText("House edge: 2%")).toBeInTheDocument();
+    expect(screen.getByText("Max: 100×")).toBeInTheDocument();
+  });
+
+  it("shows release to cash out info", () => {
+    render(<Rocket {...defaultProps} />);
+    expect(
+      screen.getAllByText("Release to cash out").length,
+    ).toBeGreaterThanOrEqual(1);
+  });
+
+  it("calls onSpendBalance on mouseDown of hold button", () => {
+    const onSpend = vi.fn(() => true);
+    render(<Rocket {...defaultProps} onSpendBalance={onSpend} />);
+    const holdBtn = screen.getByText((content) =>
+      content.includes("Hold to Fly"),
+    );
+    fireEvent.mouseDown(holdBtn);
+    expect(onSpend).toHaveBeenCalledWith(5);
+  });
+
+  it("sets bet amount via quick bet buttons", () => {
+    render(<Rocket {...defaultProps} />);
+    fireEvent.click(screen.getByText("$25"));
+    expect(
+      screen.getByText(
+        (content) =>
+          content.includes("Hold to Fly") && content.includes("$25.00"),
+      ),
+    ).toBeInTheDocument();
   });
 });

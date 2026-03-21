@@ -18,6 +18,7 @@ It's a risk-free way to experience the thrill (and heartbreak) of CS2 case openi
 - **Skin Roulette** — wager skins on a Red/Black/Green wheel
 - **Upgrader** — risk a skin for a multiplied balance payout
 - **Crash** — bet balance on a rising multiplier, cash out before it crashes
+- **Rocket** — hold-to-fly mode: press and hold to keep a rocket ascending, release to cash out before it explodes
 - **Mobile responsive** — all game modes playable on small screens
 - **Inventory management** — sort, sell individual items, or bulk sell
 - **Persistent progress** — everything saves to localStorage
@@ -83,6 +84,7 @@ src/
     SkinRoulette    — Red/Black/Green wheel betting
     Upgrader        — skin upgrade with risk meter
     Crash           — rising multiplier crash game
+    Rocket          — hold-to-fly rocket game
     Dashboard       — balance, level, XP bar
     Inventory       — skin grid with sorting & selling
   hooks/

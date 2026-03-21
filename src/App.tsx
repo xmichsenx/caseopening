@@ -14,6 +14,7 @@ import { CaseDetailModal } from "./components/CaseDetailModal";
 import { SkinRoulette } from "./components/SkinRoulette";
 import { Upgrader } from "./components/Upgrader";
 import { Crash } from "./components/Crash";
+import { Rocket } from "./components/Rocket";
 
 const CASES: CaseDefinition[] = [
   // ── Free Tier ($0) ─────────────────────────────────────
@@ -644,6 +645,7 @@ export function App() {
   const [rouletteOpen, setRouletteOpen] = useState(false);
   const [upgraderOpen, setUpgraderOpen] = useState(false);
   const [crashOpen, setCrashOpen] = useState(false);
+  const [rocketOpen, setRocketOpen] = useState(false);
 
   // Get skins specific to the selected case (filtered by weapon category, then limited to case pool)
   const caseSkins = useMemo(() => {
@@ -823,7 +825,7 @@ export function App() {
       />
 
       {/* Game Mode Buttons */}
-      <div className="grid grid-cols-3 gap-3 mb-2">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-2">
         <button
           onClick={() => setRouletteOpen(true)}
           className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm uppercase tracking-wider transition-all cursor-pointer border-2 hover:scale-[1.02]"
@@ -857,8 +859,20 @@ export function App() {
             color: "#27ae60",
           }}
         >
-          <span className="text-base">🚀</span>
+          <span className="text-base">�</span>
           Crash
+        </button>
+        <button
+          onClick={() => setRocketOpen(true)}
+          className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm uppercase tracking-wider transition-all cursor-pointer border-2 hover:scale-[1.02]"
+          style={{
+            background: "linear-gradient(135deg, #3b82f630, #6366f130)",
+            borderColor: "#3b82f660",
+            color: "#3b82f6",
+          }}
+        >
+          <span className="text-base">🚀</span>
+          Rocket
         </button>
       </div>
 
@@ -939,6 +953,16 @@ export function App() {
       <Crash
         isOpen={crashOpen}
         onClose={() => setCrashOpen(false)}
+        balance={state.balance}
+        onSpendBalance={spendBalance}
+        onAddBalance={addBalance}
+        onAddXp={addXp}
+      />
+
+      {/* Rocket */}
+      <Rocket
+        isOpen={rocketOpen}
+        onClose={() => setRocketOpen(false)}
         balance={state.balance}
         onSpendBalance={spendBalance}
         onAddBalance={addBalance}

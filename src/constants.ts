@@ -110,3 +110,20 @@ export const CRASH_TICK_INTERVAL_MS = 50;
 
 /** Controls how fast the multiplier accelerates. */
 export const CRASH_SPEED_FACTOR = 0.00006;
+
+/** Minimum ms before the crash check activates — ensures visible animation. */
+export const CRASH_GRACE_MS = 500;
+
+// ── Rocket (Hold-to-Fly) ────────────────────────────
+
+/** Tick interval in ms — 20 updates/sec. */
+export const ROCKET_TICK_INTERVAL_MS = 50;
+
+/** Controls how fast the rocket multiplier accelerates. */
+export const ROCKET_SPEED_FACTOR = 0.00007;
+
+/** Maximum multiplier before the rocket auto-explodes. */
+export const ROCKET_MAX_MULTIPLIER = 100;
+
+/** Minimum ms before the rocket crash check activates — ensures visible animation. */
+export const ROCKET_CRASH_GRACE_MS = 500;
