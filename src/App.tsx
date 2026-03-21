@@ -803,10 +803,10 @@ export function App() {
           className="text-4xl md:text-5xl font-black text-white tracking-tight"
           style={{ textShadow: "0 0 40px rgba(75,105,255,0.3)" }}
         >
-          GLOBAL OFFENSIVE
+          CASE OPENING
         </h1>
-        <p className="text-xs text-gray-500 uppercase tracking-[0.4em] mt-2 font-medium">
-          Case Simulator 4.8
+        <p className="text-xs text-gray-500 tracking-[0.2em] mt-2">
+          Open cases, earn XP, level up, and build your inventory of CS2 skins!
         </p>
       </header>
 
