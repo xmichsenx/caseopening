@@ -621,6 +621,272 @@ const CASES: CaseDefinition[] = [
       Extraordinary: 7,
     },
   },
+  // ── $10,000 "Tycoon" Tier ────────────────────────────
+  // Blue FT: $7.50-$225 → devastating loss
+  // Covert FT: $2,250-$22,500 → can break even or profit
+  // Extraordinary FT: $15,000-$300,000 → guaranteed profit
+  {
+    id: "plutocrat",
+    name: "Plutocrat Case",
+    price: 10000,
+    image:
+      "https://raw.githubusercontent.com/ByMykel/counter-strike-image-tracker/main/static/panorama/images/econ/weapon_cases/crate_sticker_pack_cologne2016_legends_png.png",
+    xpReward: 75000,
+    description: "$10K — Money talks, losers walk",
+    sellPriceMultiplier: 150,
+    rarityWeights: {
+      "Mil-Spec Grade": 48,
+      Restricted: 22,
+      Classified: 16,
+      Covert: 9,
+      Extraordinary: 5,
+    },
+  },
+  {
+    id: "monaco-special",
+    name: "Monaco Special",
+    price: 10000,
+    image:
+      "https://raw.githubusercontent.com/ByMykel/counter-strike-image-tracker/main/static/panorama/images/econ/weapon_cases/crate_sticker_pack_cologne2016_challengers_png.png",
+    xpReward: 75000,
+    description: "$10K — High society, higher stakes",
+    sellPriceMultiplier: 180,
+    rarityWeights: {
+      "Mil-Spec Grade": 52,
+      Restricted: 20,
+      Classified: 15,
+      Covert: 8,
+      Extraordinary: 5,
+    },
+  },
+  // ── $25,000 "Elite" Tier ─────────────────────────────
+  // Blue FT: $17.50-$525 → devastating loss
+  // Extraordinary FT: $35,000-$700,000 → massive profit
+  {
+    id: "ivory-tower",
+    name: "Ivory Tower",
+    price: 25000,
+    image:
+      "https://raw.githubusercontent.com/ByMykel/counter-strike-image-tracker/main/static/panorama/images/econ/weapon_cases/crate_sticker_pack_atlanta2017_legends_png.png",
+    xpReward: 120000,
+    description: "$25K — The view from the top",
+    sellPriceMultiplier: 350,
+    rarityWeights: {
+      "Mil-Spec Grade": 50,
+      Restricted: 21,
+      Classified: 16,
+      Covert: 8,
+      Extraordinary: 5,
+    },
+  },
+  {
+    id: "el-dorado",
+    name: "El Dorado",
+    price: 25000,
+    image:
+      "https://raw.githubusercontent.com/ByMykel/counter-strike-image-tracker/main/static/panorama/images/econ/weapon_cases/crate_sticker_pack_atlanta2017_challengers_png.png",
+    xpReward: 120000,
+    description: "$25K — City of gold, streets of regret",
+    sellPriceMultiplier: 400,
+    rarityWeights: {
+      "Mil-Spec Grade": 46,
+      Restricted: 22,
+      Classified: 17,
+      Covert: 10,
+      Extraordinary: 5,
+    },
+  },
+  // ── $50,000 "Magnate" Tier ───────────────────────────
+  // Blue FT: $32.50-$975 → devastating loss
+  // Covert FT: $9,750-$97,500 → can profit at high end
+  // Extraordinary FT: $65,000-$1,300,000 → huge profit
+  {
+    id: "fort-knox",
+    name: "Fort Knox",
+    price: 50000,
+    image:
+      "https://raw.githubusercontent.com/ByMykel/counter-strike-image-tracker/main/static/panorama/images/econ/weapon_cases/crate_sticker_pack_krakow2017_legends_png.png",
+    xpReward: 200000,
+    description: "$50K — Break the vault or break the bank",
+    sellPriceMultiplier: 650,
+    rarityWeights: {
+      "Mil-Spec Grade": 50,
+      Restricted: 22,
+      Classified: 15,
+      Covert: 8,
+      Extraordinary: 5,
+    },
+  },
+  {
+    id: "billionaires-gambit",
+    name: "Billionaire's Gambit",
+    price: 50000,
+    image:
+      "https://raw.githubusercontent.com/ByMykel/counter-strike-image-tracker/main/static/panorama/images/econ/weapon_cases/crate_sticker_pack_krakow2017_challengers_png.png",
+    xpReward: 200000,
+    description: "$50K — Play like you own the table",
+    sellPriceMultiplier: 750,
+    rarityWeights: {
+      "Mil-Spec Grade": 48,
+      Restricted: 20,
+      Classified: 17,
+      Covert: 10,
+      Extraordinary: 5,
+    },
+  },
+  // ── $100,000 "Sovereign" Tier ────────────────────────
+  // Blue FT: $60-$1,800 → devastating loss
+  // Covert FT: $18,000-$180,000 → can profit
+  // Extraordinary FT: $120,000-$2,400,000 → massive profit
+  {
+    id: "the-vault",
+    name: "The Vault",
+    price: 100000,
+    image:
+      "https://raw.githubusercontent.com/ByMykel/counter-strike-image-tracker/main/static/panorama/images/econ/weapon_cases/crate_sticker_pack_boston2018_legends_png.png",
+    xpReward: 350000,
+    description: "$100K — Steel doors, diamond dreams",
+    sellPriceMultiplier: 1200,
+    rarityWeights: {
+      "Mil-Spec Grade": 50,
+      Restricted: 22,
+      Classified: 16,
+      Covert: 8,
+      Extraordinary: 4,
+    },
+  },
+  {
+    id: "crown-jewels",
+    name: "Crown Jewels",
+    price: 100000,
+    image:
+      "https://raw.githubusercontent.com/ByMykel/counter-strike-image-tracker/main/static/panorama/images/econ/weapon_cases/crate_sticker_pack_boston2018_challengers_png.png",
+    xpReward: 350000,
+    description: "$100K — Fit for royalty, ruinous for most",
+    sellPriceMultiplier: 1500,
+    rarityWeights: {
+      "Mil-Spec Grade": 45,
+      Restricted: 22,
+      Classified: 18,
+      Covert: 10,
+      Extraordinary: 5,
+    },
+  },
+  // ── $250,000 "Titan" Tier ────────────────────────────
+  // Blue FT: $150-$4,500 → devastating loss on $250K case
+  // Covert FT: $45,000-$450,000 → can profit at high end
+  // Extraordinary FT: $300,000-$6,000,000 → legendary profit
+  {
+    id: "midas-touch",
+    name: "The Midas Touch",
+    price: 250000,
+    image:
+      "https://raw.githubusercontent.com/ByMykel/counter-strike-image-tracker/main/static/panorama/images/econ/weapon_cases/crate_sticker_pack_london2018_legends_png.png",
+    xpReward: 600000,
+    description: "$250K — Everything you touch turns to gold… or ash",
+    sellPriceMultiplier: 3000,
+    rarityWeights: {
+      "Mil-Spec Grade": 50,
+      Restricted: 22,
+      Classified: 16,
+      Covert: 8,
+      Extraordinary: 4,
+    },
+  },
+  {
+    id: "quantum-vault",
+    name: "Quantum Vault",
+    price: 250000,
+    image:
+      "https://raw.githubusercontent.com/ByMykel/counter-strike-image-tracker/main/static/panorama/images/econ/weapon_cases/crate_sticker_pack_london2018_challengers_png.png",
+    xpReward: 600000,
+    description: "$250K — Win and lose simultaneously until you open it",
+    sellPriceMultiplier: 3500,
+    rarityWeights: {
+      "Mil-Spec Grade": 47,
+      Restricted: 21,
+      Classified: 17,
+      Covert: 10,
+      Extraordinary: 5,
+    },
+  },
+  // ── $500,000 "Apex" Tier ─────────────────────────────
+  // Blue FT: $300-$9,000 → devastating loss on $500K case
+  // Covert FT: $90,000-$900,000 → can profit!
+  // Extraordinary FT: $600,000-$12,000,000 → life-changing profit
+  {
+    id: "philosophers-stone",
+    name: "Philosopher's Stone",
+    price: 500000,
+    image:
+      "https://raw.githubusercontent.com/ByMykel/counter-strike-image-tracker/main/static/panorama/images/econ/weapon_cases/crate_sticker_pack_katowice2019_legends_png.png",
+    xpReward: 1000000,
+    description: "$500K — Transmute your fortune… or your ruin",
+    sellPriceMultiplier: 6000,
+    rarityWeights: {
+      "Mil-Spec Grade": 50,
+      Restricted: 22,
+      Classified: 16,
+      Covert: 8,
+      Extraordinary: 4,
+    },
+  },
+  {
+    id: "excalibur",
+    name: "Excalibur",
+    price: 500000,
+    image:
+      "https://raw.githubusercontent.com/ByMykel/counter-strike-image-tracker/main/static/panorama/images/econ/weapon_cases/crate_sticker_pack_katowice2019_challengers_png.png",
+    xpReward: 1000000,
+    description: "$500K — Only the worthy profit",
+    sellPriceMultiplier: 7000,
+    rarityWeights: {
+      "Mil-Spec Grade": 46,
+      Restricted: 21,
+      Classified: 18,
+      Covert: 10,
+      Extraordinary: 5,
+    },
+  },
+  // ── $1,000,000 "Godlike" Tier ────────────────────────
+  // Blue FT: $600-$18,000 → devastating loss on $1M case
+  // Covert FT: $180,000-$1,800,000 → can profit!
+  // Extraordinary FT: $1,200,000-$24,000,000 → absurd profit
+  // ~50% chance you get a Blue and lose $980K+
+  {
+    id: "the-holy-grail",
+    name: "The Holy Grail",
+    price: 1000000,
+    image:
+      "https://raw.githubusercontent.com/ByMykel/counter-strike-image-tracker/main/static/panorama/images/econ/weapon_cases/crate_sticker_pack_berlin2019_legends_png.png",
+    xpReward: 2000000,
+    description: "$1M — The ultimate gamble. Most will lose everything.",
+    sellPriceMultiplier: 12000,
+    rarityWeights: {
+      "Mil-Spec Grade": 50,
+      Restricted: 22,
+      Classified: 16,
+      Covert: 8,
+      Extraordinary: 4,
+    },
+  },
+  {
+    id: "valhalla",
+    name: "Valhalla",
+    price: 1000000,
+    image:
+      "https://raw.githubusercontent.com/ByMykel/counter-strike-image-tracker/main/static/panorama/images/econ/weapon_cases/crate_sticker_pack_berlin2019_challengers_png.png",
+    xpReward: 2000000,
+    description: "$1M — Die a pauper or feast with the gods",
+    sellPriceMultiplier: 15000,
+    rarityWeights: {
+      "Mil-Spec Grade": 44,
+      Restricted: 20,
+      Classified: 18,
+      Covert: 12,
+      Extraordinary: 6,
+    },
+  },
 ];
 
 export function App() {

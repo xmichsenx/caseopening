@@ -8,7 +8,7 @@ It's a risk-free way to experience the thrill (and heartbreak) of CS2 case openi
 
 ### Features
 
-- **39 cases** across price tiers from free to $5,000
+- **53 cases** across price tiers from free to $1,000,000
 - **Horizontal roulette animation** with proper easing and tick sounds
 - **Real CS2 skins** pulled from the [ByMykel CSGO API](https://github.com/ByMykel/CSGO-API)
 - **Skin wear system** — Factory New, Minimal Wear, Field-Tested, Well-Worn, Battle-Scarred
@@ -35,7 +35,7 @@ Uses the official CS2 rarity weights:
 | Red (Covert)         | 0.64%  |
 | Gold (Extraordinary) | 0.26%  |
 
-Some free cases restrict which rarities can drop, and expensive cases have slightly boosted rare odds — but they're all still negative EV.
+Some free cases restrict which rarities can drop, and expensive cases have slightly boosted rare odds — but they're all still negative EV. Ultra-premium cases ($10K–$1M) offer the chance at enormous payouts on Covert and Extraordinary drops, but Blues still dominate and will wipe out most of your balance.
 
 ## Getting started
 

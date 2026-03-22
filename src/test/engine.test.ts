@@ -1,8 +1,10 @@
 import { describe, it, expect } from "vitest";
-import type { Skin } from "../types";
+import type { Skin, CaseDefinition } from "../types";
 import {
   generateRouletteStrip,
   generateSellPrice,
+  computeSkinPrice,
+  computeFullPrice,
   spinSkinRoulette,
   rollUpgrade,
   generateCrashPoint,
@@ -246,5 +248,254 @@ describe("generateCrashPoint", () => {
     }
     // Expected ~9.8%, should be at least 5%
     expect(above10 / trials).toBeGreaterThan(0.03);
+  });
+});
+
+// ── High-Value Cases ($10K–$1M) ────────────────────────────
+
+describe("high-value case definitions", () => {
+  const highValueCases: Pick<
+    CaseDefinition,
+    "id" | "name" | "price" | "sellPriceMultiplier" | "rarityWeights"
+  >[] = [
+    {
+      id: "plutocrat",
+      name: "Plutocrat Case",
+      price: 10000,
+      sellPriceMultiplier: 150,
+      rarityWeights: {
+        "Mil-Spec Grade": 48,
+        Restricted: 22,
+        Classified: 16,
+        Covert: 9,
+        Extraordinary: 5,
+      },
+    },
+    {
+      id: "monaco-special",
+      name: "Monaco Special",
+      price: 10000,
+      sellPriceMultiplier: 180,
+      rarityWeights: {
+        "Mil-Spec Grade": 52,
+        Restricted: 20,
+        Classified: 15,
+        Covert: 8,
+        Extraordinary: 5,
+      },
+    },
+    {
+      id: "ivory-tower",
+      name: "Ivory Tower",
+      price: 25000,
+      sellPriceMultiplier: 350,
+      rarityWeights: {
+        "Mil-Spec Grade": 50,
+        Restricted: 21,
+        Classified: 16,
+        Covert: 8,
+        Extraordinary: 5,
+      },
+    },
+    {
+      id: "el-dorado",
+      name: "El Dorado",
+      price: 25000,
+      sellPriceMultiplier: 400,
+      rarityWeights: {
+        "Mil-Spec Grade": 46,
+        Restricted: 22,
+        Classified: 17,
+        Covert: 10,
+        Extraordinary: 5,
+      },
+    },
+    {
+      id: "fort-knox",
+      name: "Fort Knox",
+      price: 50000,
+      sellPriceMultiplier: 650,
+      rarityWeights: {
+        "Mil-Spec Grade": 50,
+        Restricted: 22,
+        Classified: 15,
+        Covert: 8,
+        Extraordinary: 5,
+      },
+    },
+    {
+      id: "billionaires-gambit",
+      name: "Billionaire's Gambit",
+      price: 50000,
+      sellPriceMultiplier: 750,
+      rarityWeights: {
+        "Mil-Spec Grade": 48,
+        Restricted: 20,
+        Classified: 17,
+        Covert: 10,
+        Extraordinary: 5,
+      },
+    },
+    {
+      id: "the-vault",
+      name: "The Vault",
+      price: 100000,
+      sellPriceMultiplier: 1200,
+      rarityWeights: {
+        "Mil-Spec Grade": 50,
+        Restricted: 22,
+        Classified: 16,
+        Covert: 8,
+        Extraordinary: 4,
+      },
+    },
+    {
+      id: "crown-jewels",
+      name: "Crown Jewels",
+      price: 100000,
+      sellPriceMultiplier: 1500,
+      rarityWeights: {
+        "Mil-Spec Grade": 45,
+        Restricted: 22,
+        Classified: 18,
+        Covert: 10,
+        Extraordinary: 5,
+      },
+    },
+    {
+      id: "midas-touch",
+      name: "The Midas Touch",
+      price: 250000,
+      sellPriceMultiplier: 3000,
+      rarityWeights: {
+        "Mil-Spec Grade": 50,
+        Restricted: 22,
+        Classified: 16,
+        Covert: 8,
+        Extraordinary: 4,
+      },
+    },
+    {
+      id: "quantum-vault",
+      name: "Quantum Vault",
+      price: 250000,
+      sellPriceMultiplier: 3500,
+      rarityWeights: {
+        "Mil-Spec Grade": 47,
+        Restricted: 21,
+        Classified: 17,
+        Covert: 10,
+        Extraordinary: 5,
+      },
+    },
+    {
+      id: "philosophers-stone",
+      name: "Philosopher's Stone",
+      price: 500000,
+      sellPriceMultiplier: 6000,
+      rarityWeights: {
+        "Mil-Spec Grade": 50,
+        Restricted: 22,
+        Classified: 16,
+        Covert: 8,
+        Extraordinary: 4,
+      },
+    },
+    {
+      id: "excalibur",
+      name: "Excalibur",
+      price: 500000,
+      sellPriceMultiplier: 7000,
+      rarityWeights: {
+        "Mil-Spec Grade": 46,
+        Restricted: 21,
+        Classified: 18,
+        Covert: 10,
+        Extraordinary: 5,
+      },
+    },
+    {
+      id: "the-holy-grail",
+      name: "The Holy Grail",
+      price: 1000000,
+      sellPriceMultiplier: 12000,
+      rarityWeights: {
+        "Mil-Spec Grade": 50,
+        Restricted: 22,
+        Classified: 16,
+        Covert: 8,
+        Extraordinary: 4,
+      },
+    },
+    {
+      id: "valhalla",
+      name: "Valhalla",
+      price: 1000000,
+      sellPriceMultiplier: 15000,
+      rarityWeights: {
+        "Mil-Spec Grade": 44,
+        Restricted: 20,
+        Classified: 18,
+        Covert: 12,
+        Extraordinary: 6,
+      },
+    },
+  ];
+
+  it.each(highValueCases)(
+    "$name rarity weights sum to 100",
+    ({ rarityWeights }) => {
+      const sum = Object.values(rarityWeights!).reduce((a, b) => a + b, 0);
+      expect(sum).toBe(100);
+    },
+  );
+
+  it.each(highValueCases)(
+    "$name has unique id",
+    ({ id }) => {
+      const count = highValueCases.filter((c) => c.id === id).length;
+      expect(count).toBe(1);
+    },
+  );
+
+  it.each(highValueCases)(
+    "$name Mil-Spec (blue) max FT price is well below case price (house edge)",
+    ({ price, sellPriceMultiplier }) => {
+      const mult = sellPriceMultiplier ?? 1;
+      const [, maxBlue] = SELL_PRICE_RANGES["Mil-Spec Grade"];
+      // Blue FT (most common drop) should be a significant loss
+      const maxBluePrice = maxBlue * mult;
+      expect(maxBluePrice).toBeLessThan(price * 0.5);
+    },
+  );
+
+  it.each(highValueCases)(
+    "$name Extraordinary FT max price exceeds case price (profit possible)",
+    ({ price, sellPriceMultiplier }) => {
+      const mult = sellPriceMultiplier ?? 1;
+      const [, maxGold] = SELL_PRICE_RANGES["Extraordinary"];
+      // FN StatTrak Extraordinary should be a huge win
+      const maxGoldPrice = maxGold * mult * 2.5 * 3.0; // FN + StatTrak
+      expect(maxGoldPrice).toBeGreaterThan(price);
+    },
+  );
+
+  it.each(highValueCases)(
+    "$name Covert FT can potentially exceed case price",
+    ({ price, sellPriceMultiplier }) => {
+      const mult = sellPriceMultiplier ?? 1;
+      const [, maxRed] = SELL_PRICE_RANGES["Covert"];
+      // FN StatTrak Covert should be able to profit
+      const maxRedPrice = maxRed * mult * 2.5 * 3.0;
+      expect(maxRedPrice).toBeGreaterThan(price);
+    },
+  );
+
+  it("computeFullPrice scales correctly with high multipliers", () => {
+    // Simulating a $1M case Extraordinary skin base price
+    const basePrice = 2000 * 12000; // max Extraordinary × Holy Grail multiplier
+    const fnStatTrakPrice = computeFullPrice(basePrice, "Factory New", true);
+    expect(fnStatTrakPrice).toBe(basePrice * 2.5 * 3.0);
+    expect(fnStatTrakPrice).toBeGreaterThan(1000000); // exceeds $1M case price
   });
 });
