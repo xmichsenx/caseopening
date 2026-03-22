@@ -3,7 +3,6 @@ import type { Skin, CaseDefinition } from "../types";
 import {
   generateRouletteStrip,
   generateSellPrice,
-  computeSkinPrice,
   computeFullPrice,
   spinSkinRoulette,
   rollUpgrade,
